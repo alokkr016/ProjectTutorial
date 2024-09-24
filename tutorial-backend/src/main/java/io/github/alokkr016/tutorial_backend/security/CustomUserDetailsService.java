@@ -1,4 +1,4 @@
-package io.github.alokkr016.tutorial_backend.service;
+package io.github.alokkr016.tutorial_backend.security;
 
 import io.github.alokkr016.tutorial_backend.model.User;
 import io.github.alokkr016.tutorial_backend.repository.UserRepository;
@@ -22,12 +22,8 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        return new org.springframework.security.core.userdetails.User(
-                user.getUsername(),
-                user.getPassword(), // Should be encoded
-                new ArrayList<>()
-        );
+
+        return this.userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
     }
+
 }
