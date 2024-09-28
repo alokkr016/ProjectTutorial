@@ -26,79 +26,92 @@ function Login() {
     }
   };
 
-  const handleGoogleLogin = (credentialResponse) => {
-    console.log(credentialResponse);
-    // Send token to the backend for validation or login
+  const handleGoogleLogin = async (credentialResponse) => {
+    const token = credentialResponse.credential;
+
+    // Send the Google token to your backend for validation
+    const response = await fetch("/oauth2/authorization/google", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ token }),
+    });
+
+    if (response.ok) {
+      console.log("Google login successful!");
+      navigate("/welcome");
+    } else {
+      console.error("Google login failed!");
+    }
   };
 
   return (
-    <GoogleOAuthProvider clientId="YOUR_GOOGLE_CLIENT_ID">
-      <Box
-        component="form"
-        onSubmit={handleSubmit}
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          height: "100vh",
-          backgroundColor: "#f5f5f5",
-          padding: "2rem",
-        }}
-      >
-        <Typography variant="h4" sx={{ mb: 3 }}>
-          Login
-        </Typography>
-        <TextField
-          label="Username"
-          variant="outlined"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          sx={{ mb: 2, width: "300px" }}
-        />
-        <TextField
-          label="Password"
-          variant="outlined"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          sx={{ mb: 2, width: "300px" }}
-        />
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          sx={{ width: "300px" }}
+      <GoogleOAuthProvider clientId="551414171875-6hq6eiokmjadat19drman5prqu5mlhdl.apps.googleusercontent.com">
+        <Box
+            component="form"
+            onSubmit={handleSubmit}
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              height: "100vh",
+              backgroundColor: "#f5f5f5",
+              padding: "2rem",
+            }}
         >
-          Login
-        </Button>
+          <Typography variant="h4" sx={{ mb: 3 }}>
+            Login
+          </Typography>
+          <TextField
+              label="Username"
+              variant="outlined"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              sx={{ mb: 2, width: "300px" }}
+          />
+          <TextField
+              label="Password"
+              variant="outlined"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              sx={{ mb: 2, width: "300px" }}
+          />
+          <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              sx={{ width: "300px" }}
+          >
+            Login
+          </Button>
 
-        <Typography variant="body1" sx={{ mt: 3 }}>
-          Or login with Google
-        </Typography>
-        <GoogleLogin
-          onSuccess={handleGoogleLogin}
-          onError={() => {
-            console.log("Login Failed");
-          }}
-        />
+          <Typography variant="body1" sx={{ mt: 3 }}>
+            Or login with Google
+          </Typography>
+          <GoogleLogin
+              onSuccess={handleGoogleLogin}
+              onError={() => {
+                console.log("Login Failed");
+              }}
+          />
 
-        {/* Forgot Password and Register links */}
-        {/* Forgot Password and Register links */}
-        <Grid container direction="column" alignItems="center" sx={{ mt: 2 }}>
-          <Grid item>
-            <Link href="/forgot-password" variant="body2">
-              Forgot password?
-            </Link>
+          <Grid container direction="column" alignItems="center" sx={{ mt: 2 }}>
+            <Grid item>
+              <Link href="/forgot-password" variant="body2">
+                Forgot password?
+              </Link>
+            </Grid>
+            <Grid item sx={{ mt: 1 }}>
+              <Link href="/register" variant="body2">
+                Don't have an account? Register
+              </Link>
+            </Grid>
           </Grid>
-          <Grid item sx={{ mt: 1 }}>
-            <Link href="/register" variant="body2">
-              Don't have an account? Register
-            </Link>
-          </Grid>
-        </Grid>
-      </Box>
-    </GoogleOAuthProvider>
+        </Box>
+      </GoogleOAuthProvider>
   );
 }
 
